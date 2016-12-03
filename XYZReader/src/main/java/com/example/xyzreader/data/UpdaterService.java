@@ -12,13 +12,15 @@ import android.os.RemoteException;
 import android.text.format.Time;
 import android.util.Log;
 
-import com.example.xyzreader.remote.RemoteEndpointUtil;
+import com.example.xyzreader.entities.Article;
+import com.example.xyzreader.remote.ApiClient;
+import com.example.xyzreader.remote.ServiceGenerator;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
 
 public class UpdaterService extends IntentService {
     private static final String TAG = "UpdaterService";
@@ -55,30 +57,30 @@ public class UpdaterService extends IntentService {
         cpo.add(ContentProviderOperation.newDelete(dirUri).build());
 
         try {
-            JSONArray array = RemoteEndpointUtil.fetchJsonArray();
-            if (array == null) {
-                throw new JSONException("Invalid parsed item array" );
-            }
+            Call<List<Article>> call = ServiceGenerator.createService(ApiClient.class).getArticles();
 
-            for (int i = 0; i < array.length(); i++) {
+            List<Article> articles = call.execute().body();
+
+            for (Article itArticle : articles) {
                 ContentValues values = new ContentValues();
-                JSONObject object = array.getJSONObject(i);
-                values.put(ItemsContract.Items.SERVER_ID, object.getString("id" ));
-                values.put(ItemsContract.Items.AUTHOR, object.getString("author" ));
-                values.put(ItemsContract.Items.TITLE, object.getString("title" ));
-                values.put(ItemsContract.Items.BODY, object.getString("body" ));
-                values.put(ItemsContract.Items.THUMB_URL, object.getString("thumb" ));
-                values.put(ItemsContract.Items.PHOTO_URL, object.getString("photo" ));
-                values.put(ItemsContract.Items.ASPECT_RATIO, object.getString("aspect_ratio" ));
-                time.parse3339(object.getString("published_date"));
+                values.put(ItemsContract.Items.SERVER_ID, itArticle.getId());
+                values.put(ItemsContract.Items.AUTHOR, itArticle.getAuthor());
+                values.put(ItemsContract.Items.TITLE, itArticle.getTitle());
+                values.put(ItemsContract.Items.BODY, itArticle.getBody());
+                values.put(ItemsContract.Items.THUMB_URL, itArticle.getThumb());
+                values.put(ItemsContract.Items.PHOTO_URL, itArticle.getPhoto());
+                values.put(ItemsContract.Items.ASPECT_RATIO, itArticle.getAspectRatio());
+                time.parse3339(itArticle.getPublishedDate());
                 values.put(ItemsContract.Items.PUBLISHED_DATE, time.toMillis(false));
                 cpo.add(ContentProviderOperation.newInsert(dirUri).withValues(values).build());
             }
 
             getContentResolver().applyBatch(ItemsContract.CONTENT_AUTHORITY, cpo);
 
-        } catch (JSONException | RemoteException | OperationApplicationException e) {
+        } catch (RemoteException | OperationApplicationException e) {
             Log.e(TAG, "Error updating content.", e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         sendStickyBroadcast(
