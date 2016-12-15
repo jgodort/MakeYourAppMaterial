@@ -1,13 +1,13 @@
 package com.example.xyzreader.ui;
 
-import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
 /**
  * An activity representing a list of Articles. This activity has different presentations for
  * handset and tablet-size devices. On handsets, the activity presents a list of items, which when
- * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
+ * touched, lead to a {@link DetailActivity} representing item details. On tablets, the
  * activity presents a grid of items as cards.
  */
 public class ArticleListActivity extends AppCompatActivity implements
@@ -49,10 +49,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
 
-        // final View toolbarContainerView = findViewById(R.id.toolbar_container);
-
-
-        getLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
             refresh();
@@ -175,9 +172,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            //thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
-            //titleView = (TextView) view.findViewById(R.id.article_title);
-            //subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
         }
     }
 }

@@ -21,7 +21,6 @@
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_light"
             android:scaleType="centerCrop"
             tools:src="@drawable/sample" />
 

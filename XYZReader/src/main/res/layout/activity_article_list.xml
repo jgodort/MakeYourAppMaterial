@@ -12,6 +12,14 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+        <!--android:id="@+id/collapsing_toolbar_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:contentScrim="@color/teal_500"-->
+        <!--app:layout_scrollFlags="scroll|enterAlways"-->
+        <!--android:background="@color/teal_500">-->
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -29,6 +37,7 @@
                 android:src="@drawable/logo" />
 
         </android.support.v7.widget.Toolbar>
+        <!-- </android.support.design.widget.CollapsingToolbarLayout>-->
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
