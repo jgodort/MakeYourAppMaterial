@@ -58,6 +58,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+
+        supportStartPostponedEnterTransition();
         mCursor = data;
         mPagerAdapter.notifyDataSetChanged();
 
