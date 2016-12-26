@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorPrimary"
-        android:elevation="4dp">
+        android:elevation="@dimen/app_bar_default_elevation">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -26,7 +26,6 @@
                 android:src="@drawable/logo" />
 
         </android.support.v7.widget.Toolbar>
-        <!-- </android.support.design.widget.CollapsingToolbarLayout>-->
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout

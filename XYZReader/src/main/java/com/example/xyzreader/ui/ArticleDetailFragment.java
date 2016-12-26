@@ -2,9 +2,7 @@ package com.example.xyzreader.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -37,17 +35,13 @@ public class ArticleDetailFragment extends Fragment implements
     private static final String TAG = "ArticleDetailFragment";
 
     public static final String ARG_ITEM_ID = "item_id";
-    private static final float PARALLAX_FACTOR = 1.25f;
 
     private Cursor mCursor;
     private long mItemId;
     private View mRootView;
 
-    private int mMutedColor = 0xFF333333;
 
 
-    private ColorDrawable mStatusBarColorDrawable;
-    private int mTopInset;
 
     @BindView(R.id.photo)
     DynamicHeightNetworkImageView mPhotoView;
@@ -60,9 +54,7 @@ public class ArticleDetailFragment extends Fragment implements
     @BindView(R.id.article_body)
     TextView mBodyView;
 
-    private int mScrollY;
     private boolean mIsCard = false;
-    private int mStatusBarFullOpacityBottom;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -90,8 +82,6 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);
-        mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
-                R.dimen.detail_card_top_margin);
     }
 
     public DetailActivity getActivityCast() {
@@ -115,9 +105,6 @@ public class ArticleDetailFragment extends Fragment implements
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         ButterKnife.bind(this, mRootView);
 
-        mStatusBarColorDrawable = new ColorDrawable(0);
-
-
         mShareFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,37 +116,9 @@ public class ArticleDetailFragment extends Fragment implements
         });
 
         bindViews();
-        //updateStatusBar();
         return mRootView;
     }
 
-    private void updateStatusBar() {
-        int color = 0;
-        if (mPhotoView != null && mTopInset != 0 && mScrollY > 0) {
-            float f = progress(mScrollY,
-                    mStatusBarFullOpacityBottom - mTopInset * 3,
-                    mStatusBarFullOpacityBottom - mTopInset);
-            color = Color.argb((int) (255 * f),
-                    (int) (Color.red(mMutedColor) * 0.9),
-                    (int) (Color.green(mMutedColor) * 0.9),
-                    (int) (Color.blue(mMutedColor) * 0.9));
-        }
-        mStatusBarColorDrawable.setColor(color);
-    }
-
-    static float progress(float v, float min, float max) {
-        return constrain((v - min) / (max - min), 0, 1);
-    }
-
-    static float constrain(float val, float min, float max) {
-        if (val < min) {
-            return min;
-        } else if (val > max) {
-            return max;
-        } else {
-            return val;
-        }
-    }
 
     private void bindViews() {
         if (mRootView == null) {
@@ -170,9 +129,9 @@ public class ArticleDetailFragment extends Fragment implements
         mBodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Roboto-Regular.ttf"));
 
         if (mCursor != null) {
-            mRootView.setAlpha(0);
+            // mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
-            mRootView.animate().alpha(1);
+            //mRootView.animate().alpha(1);
             mTitleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             mBylineView.setText(Html.fromHtml(
                     DateUtils.getRelativeTimeSpanString(
@@ -185,8 +144,7 @@ public class ArticleDetailFragment extends Fragment implements
 
             mBodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY)));
 
-            Glide
-                    .with(getContext())
+            Glide.with(getContext())
                     .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
                     .centerCrop()
                     .crossFade()

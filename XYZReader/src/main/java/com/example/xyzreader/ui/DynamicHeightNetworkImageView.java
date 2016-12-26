@@ -1,10 +1,10 @@
 package com.example.xyzreader.ui;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
-public class DynamicHeightNetworkImageView extends ImageView {
+public class DynamicHeightNetworkImageView extends AppCompatImageView {
     private float mAspectRatio = 1.5f;
 
     public DynamicHeightNetworkImageView(Context context) {
@@ -30,8 +30,6 @@ public class DynamicHeightNetworkImageView extends ImageView {
 
         int threeTwoHeightSpec = MeasureSpec.makeMeasureSpec(threeTwoHeight, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, threeTwoHeightSpec);
-        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //int measuredWidth = getMeasuredWidth();
-        //setMeasuredDimension(measuredWidth, (int) (measuredWidth / mAspectRatio));
+
     }
 }

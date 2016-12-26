@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -17,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -119,6 +121,7 @@ public class ArticleListActivity extends AppCompatActivity implements
             mCursor = cursor;
         }
 
+
         @Override
         public long getItemId(int position) {
             mCursor.moveToPosition(position);
@@ -134,15 +137,24 @@ public class ArticleListActivity extends AppCompatActivity implements
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                                    ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))),
-                            ActivityOptions.makeSceneTransitionAnimation(ArticleListActivity.this).toBundle());
-//                    ArticleListActivity.this.startActivity(new Intent(Intent.ACTION_VIEW,
-//                            ItemsContract.Items.buildItemUri(
-//                                    getItemId(vh.getAdapterPosition()))),
-//                            ActivityOptions.makeSceneTransitionAnimation(ArticleListActivity.this,
-//                                    view,
-//                                    view.getTransitionName()).toBundle());
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+
+                        ImageView image = (ImageView) view.findViewById(R.id.thumbnail);
+                        Intent intent = new Intent(ArticleListActivity.this, DetailActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())));
+                        ArticleListActivity.this.startActivity(intent,
+                                ActivityOptions.makeSceneTransitionAnimation(ArticleListActivity.this, image,
+                                        image.getTransitionName()).toBundle());
+
+                    } else {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                ItemsContract.Items.buildItemUri(
+                                        getItemId(vh.getAdapterPosition()))));
+                    }
+
                 }
             });
             return vh;
@@ -161,16 +173,11 @@ public class ArticleListActivity extends AppCompatActivity implements
                             + " by "
                             + mCursor.getString(ArticleLoader.Query.AUTHOR));
 
-            Glide
-                    .with(getApplicationContext())
+            Glide.with(getApplicationContext())
                     .load(mCursor.getString(ArticleLoader.Query.THUMB_URL))
                     .centerCrop()
                     .crossFade()
                     .into(holder.thumbnailView);
-
-//            holder.thumbnailView.setImageUrl(
-//                    mCursor.getString(ArticleLoader.Query.THUMB_URL),
-//                    ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
         }
 
@@ -178,7 +185,10 @@ public class ArticleListActivity extends AppCompatActivity implements
         public int getItemCount() {
             return mCursor.getCount();
         }
+
+
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.thumbnail)
@@ -192,5 +202,6 @@ public class ArticleListActivity extends AppCompatActivity implements
             super(view);
             ButterKnife.bind(this, view);
         }
+
     }
 }

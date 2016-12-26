@@ -9,25 +9,23 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.view.ViewGroup;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private Cursor mCursor;
     private long mStartId;
 
-
     @BindView(R.id.pager)
     ViewPager mPager;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     private MyPagerAdapter mPagerAdapter;
 
@@ -35,17 +33,35 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
+
+        getSupportLoaderManager().initLoader(0, null, this);
+
+
+        mPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setPageMargin(
+                (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        1,
+                        getResources().getDisplayMetrics()));
+
+        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mCursor != null) {
+                    mCursor.moveToPosition(position);
+                    mCursor.getLong(ArticleLoader.Query._ID);
+                }
+            }
+        });
 
         if (savedInstanceState == null) {
 
             if (getIntent() != null && getIntent().getData() != null) {
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
             }
-            ArticleDetailFragment articleDetailFragment = ArticleDetailFragment.newInstance(mStartId);
-
-
-            getSupportFragmentManager().beginTransaction().
-                    add(R.id.fragment_detail, articleDetailFragment).commit();
         }
     }
 
@@ -91,6 +107,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             super(fm);
         }
 
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            //ArticleDetailFragment fragment = (ArticleDetailFragment) object;
+        }
 
         @Override
         public Fragment getItem(int position) {
