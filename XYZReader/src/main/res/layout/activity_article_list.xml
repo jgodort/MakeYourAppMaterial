@@ -38,10 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="28dp"
+            android:paddingBottom="@dimen/recycler_bottom_padding"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingRight="@dimen/list_side_margin"
-            android:paddingTop="50dp"
+            android:paddingTop="@dimen/recycler_top_padding"
             android:scrollbarStyle="outsideOverlay"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.v4.widget.SwipeRefreshLayout>
